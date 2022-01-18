@@ -1,4 +1,4 @@
-package com.example.myfirstapp;
+package com.example.myfirstapp.classes;
 
 public class User {
     private String username;
@@ -7,14 +7,6 @@ public class User {
     private String adress ;
     private Integer postalcode;
     private Integer userID;
-
-    public User(String username, String password, Boolean teacher, String adress, Integer postalcode) {
-        this.username = username;
-        this.password = password;
-        this.teacher = teacher;
-        this.adress = adress;
-        this.postalcode = postalcode;
-    }
 
 
     public String getUsername() {
