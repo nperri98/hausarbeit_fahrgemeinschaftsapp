@@ -6,7 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.myfirstapp.classes.User;
+
 public class MainMenuActivity extends AppCompatActivity {
+
+    User currentUser;
 
     Button buttonShow,buttonCreate,buttonSettings,buttonLogout;
 
@@ -24,10 +28,16 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
 
-        buttonShow.setOnClickListener(v -> startActivity(new Intent(MainMenuActivity.this,ShowCarpoolActivity.class)));
-        buttonSettings.setOnClickListener(v -> startActivity(new Intent(MainMenuActivity.this,SettingsActivity.class)));
-        buttonCreate.setOnClickListener(v -> startActivity(new Intent(MainMenuActivity.this,CreateCarpoolActivity.class)));
-        buttonSettings.setOnClickListener(v -> startActivity(new Intent(MainMenuActivity.this,SettingsActivity.class)));
-        buttonLogout.setOnClickListener(v -> Toast.makeText(MainMenuActivity.this,"Logout Knopf funktioniert",Toast.LENGTH_SHORT).show());
+        buttonShow.setOnClickListener(v -> startActivity(new Intent(MainMenuActivity.this,
+                ShowCarpoolActivity.class)));
+        buttonSettings.setOnClickListener(v -> startActivity(new Intent(MainMenuActivity.this,
+                SettingsActivity.class)));
+        buttonCreate.setOnClickListener(v -> startActivity(new Intent(MainMenuActivity.this,
+                CreateCarpoolActivity.class)));
+        buttonSettings.setOnClickListener(v -> startActivity(new Intent(MainMenuActivity.this,
+                SettingsActivity.class)));
+        buttonLogout.setOnClickListener(v -> Toast.makeText(MainMenuActivity.this,
+                "Logout Knopf funktioniert",
+                Toast.LENGTH_SHORT).show());
     }
 }

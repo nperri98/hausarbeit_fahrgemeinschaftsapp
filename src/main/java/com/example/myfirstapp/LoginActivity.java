@@ -1,5 +1,6 @@
 package com.example.myfirstapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.myfirstapp.classes.User;
 import com.example.myfirstapp.httpinterfaces.UserApiInterface;
 
+import java.security.MessageDigest;
 import java.util.List;
 
 import retrofit2.Call;
@@ -36,45 +38,39 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogIn=findViewById(R.id.buttonLogIn);
         editUsername=findViewById(R.id.editUsername);
         editPassword=findViewById(R.id.editPassword);
+        Retrofit retrofit= new Retrofit.Builder()
+                .baseUrl(" http://192.168.178.33:8080")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        UserApiInterface userApiInterface = retrofit.create(UserApiInterface.class);
+
 
 
         buttonLogIn.setOnClickListener(v -> {
             try{
-                Retrofit retrofit= new Retrofit.Builder()
-                        .baseUrl("10.50.128.78:8080")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
 
-                UserApiInterface userApiInterface = retrofit.create(UserApiInterface.class);
-
-                Call<List<User>> call = userApiInterface.getUser();
-
-
-                call.enqueue(new Callback<List<User>>() {
+                User user =new User();
+                user.setUsername(username);
+                user.setPassword(hashPassword(password));
+                Call call = userApiInterface.login(user);
+                call.enqueue(new Callback<User>() {
                     @Override
-                    public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                    public void onResponse(Call call, Response response) {
+                        if(response.isSuccessful()) {
 
-                        if(!response.isSuccessful()){
-                            Toast.makeText(LoginActivity.this,"Code: "+response.code(),Toast.LENGTH_LONG).show();
-                            return;
+                            startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
+                        }else if (response.code()==418) {
+                            Toast.makeText(LoginActivity.this, "Passwort falsch", Toast.LENGTH_LONG);
+                        }else{
+                         Toast.makeText(LoginActivity.this,"Error 404 : Username not found",Toast.LENGTH_LONG);
                         }
-                       List<User> userList = response.body();
-
-                        for(User user : userList){
-                            Toast.makeText(LoginActivity.this,user.getUsername(),Toast.LENGTH_LONG).show();
                         }
-
-                    }
-
                     @Override
-                    public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable throwable) {
-                        Toast.makeText(LoginActivity.this,throwable.getMessage(),Toast.LENGTH_LONG).show();
+                    public void onFailure(Call call, Throwable t) {
+                        Toast.makeText(LoginActivity.this,t.getMessage(),Toast.LENGTH_LONG);
                     }
                 });
-
-
-
-            }catch (Exception e){
+            } catch (Exception e){
                 e.printStackTrace();
             }
 
@@ -82,5 +78,20 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
+    public static String hashPassword(String originalPassword){
+        try{
+            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            final byte[] hash = digest.digest(originalPassword.getBytes("UTF-8"));
+            final StringBuilder hexString = new StringBuilder();
+            for (int i = 0; i < hash.length; i++) {
+                final String hex = Integer.toHexString(0xff & hash[i]);
+                if(hex.length() == 1)
+                    hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch(Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
 }

@@ -7,8 +7,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myfirstapp.classes.Post;
-import com.example.myfirstapp.httpinterfaces.JsonPlaceHolderApi;
+import com.example.myfirstapp.classes.User;
+import com.example.myfirstapp.httpinterfaces.UserApiInterface;
 
 import java.util.List;
 
@@ -30,41 +30,41 @@ public class MainActivity extends AppCompatActivity {
         textViewResult = findViewById(R.id.text_view_result);
 
         Retrofit retrofit= new Retrofit.Builder()
-                .baseUrl("https://jsonplaceholder.typicode.com")
+                .baseUrl(" http://192.168.178.33:8080")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        JsonPlaceHolderApi jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        UserApiInterface userApiInterface = retrofit.create(UserApiInterface.class);
 
-        Call<List<Post>> call = jsonPlaceHolderApi.getPosts();
+        Call<List<User>> call = userApiInterface.getUser();
 
 
-        call.enqueue(new Callback<List<Post>>() {
+        call.enqueue(new Callback<List<User>>() {
             @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
 
                 if (!response.isSuccessful()) {
                     textViewResult.setText("Code: " + response.code());
                     return;
                 }
 
-                List<Post> posts = response.body();
+                List<User> posts = response.body();
 
                 assert posts != null;
-                for (Post post : posts) {
+                for (User post : posts) {
                     String content = "";
-                    content += "ID: " + post.getId() + "\n";
-                    content += "User ID: " + post.getUserId() + "\n";
-                    content += "Title: " + post.getTitle() + "\n";
-                    content += "Text: " + post.getText() + "\n\n";
+                    content += "ID: " + post.getAdress() + "\n";
+                    content += "User ID: " + post.getUsername() + "\n";
+                    content += "Title: " + post.getPassword() + "\n";
+                    content += "Text: " + post.getPostalcode() + "\n\n";
 
                     textViewResult.append(content);
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Post>> call, @NonNull Throwable throwable) {
-                Toast.makeText(MainActivity.this,throwable.getMessage(),Toast.LENGTH_LONG).show();
+            public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable throwable) {
+                textViewResult.setText(throwable.getMessage());
             }
         });
     }
