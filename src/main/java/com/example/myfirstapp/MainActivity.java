@@ -1,16 +1,15 @@
 package com.example.myfirstapp;
 
+import static com.example.myfirstapp.LoginActivity.hashPassword;
+
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myfirstapp.classes.User;
 import com.example.myfirstapp.httpinterfaces.UserApiInterface;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,40 +29,41 @@ public class MainActivity extends AppCompatActivity {
         textViewResult = findViewById(R.id.text_view_result);
 
         Retrofit retrofit= new Retrofit.Builder()
-                .baseUrl(" http://192.168.178.33:8080")
+                .baseUrl(" http://10.50.128.76:8080")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         UserApiInterface userApiInterface = retrofit.create(UserApiInterface.class);
+        User test = new User("test1",hashPassword("password124"));
 
-        Call<List<User>> call = userApiInterface.getUser();
+        Call<User> call = userApiInterface.login(test);
 
 
-        call.enqueue(new Callback<List<User>>() {
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
 
                 if (!response.isSuccessful()) {
+
                     textViewResult.setText("Code: " + response.code());
                     return;
                 }
 
-                List<User> posts = response.body();
+                User post = response.body();
 
-                assert posts != null;
-                for (User post : posts) {
+
                     String content = "";
-                    content += "ID: " + post.getAdress() + "\n";
+                assert post != null;
+                content += "ID: " + post.getAdress() + "\n";
                     content += "User ID: " + post.getUsername() + "\n";
                     content += "Title: " + post.getPassword() + "\n";
                     content += "Text: " + post.getPostalcode() + "\n\n";
 
                     textViewResult.append(content);
-                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<User>> call, @NonNull Throwable throwable) {
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable throwable) {
                 textViewResult.setText(throwable.getMessage());
             }
         });

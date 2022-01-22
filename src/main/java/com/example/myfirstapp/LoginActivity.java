@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         editUsername=findViewById(R.id.editUsername);
         editPassword=findViewById(R.id.editPassword);
         Retrofit retrofit= new Retrofit.Builder()
-                .baseUrl(" http://192.168.178.33:8080")
+                .baseUrl(" http://10.50.128.76:8080")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         UserApiInterface userApiInterface = retrofit.create(UserApiInterface.class);
@@ -49,15 +49,12 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogIn.setOnClickListener(v -> {
             try{
 
-                User user =new User();
-                user.setUsername(username);
-                user.setPassword(hashPassword(password));
+                User user =new User("username",hashPassword(password));
                 Call call = userApiInterface.login(user);
                 call.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call call, Response response) {
                         if(response.isSuccessful()) {
-
                             startActivity(new Intent(LoginActivity.this, MainMenuActivity.class));
                         }else if (response.code()==418) {
                             Toast.makeText(LoginActivity.this, "Passwort falsch", Toast.LENGTH_LONG);
@@ -77,6 +74,8 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
+
 
     public static String hashPassword(String originalPassword){
         try{

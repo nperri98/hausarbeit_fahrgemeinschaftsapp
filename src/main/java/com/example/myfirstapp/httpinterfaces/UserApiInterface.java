@@ -12,6 +12,10 @@ import retrofit2.http.POST;
 public interface UserApiInterface {
     @GET("/user")
     Call <List<User>> getUser();
-    @POST("/login")
-    Call<User> login(@Body User loginUser);
+
+    @POST("/user")
+    Call<User> saveUser(@Body User saveUser);
+
+    @POST("/user/login")
+    Call<User> login ( @Body User loginUser);
 }

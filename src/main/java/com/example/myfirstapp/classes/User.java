@@ -8,6 +8,10 @@ public class User {
     private Integer postalcode;
     private Integer userID;
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public String getUsername() {
         return username;
