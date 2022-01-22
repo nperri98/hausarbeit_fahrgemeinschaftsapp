@@ -1,5 +1,6 @@
 package com.example.myfirstapp;
 
+//import com.mysql.jdbc.Driver;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -21,8 +22,9 @@ public class DbConnection {
         this.serverURL = serverURL;
         this.username = username;
         this.password = password;
+
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            Class.forName("com.mysql.jdbc.Driver");
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -30,8 +32,7 @@ public class DbConnection {
     }
 
     public void connect() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:mysql://10.50.128.66:3306/hausarbeit?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=GMT"
-                     ,"admin","android");
+        connection = DriverManager.getConnection("jdbc:mysql://"+ "192.168.186.1" + ":"+ "3306"+";"+ "databasename="+ "hausarbeit"+";user="+username+";password="+password+";");
     }
 
     public void executeUpdate(String command) throws SQLException {
